@@ -19,5 +19,5 @@ mongoose
   })
 
 app.listen(port, () => {
-  console.log('正在聽', port)
+  console.log('Listening at port: ', port)
 })
