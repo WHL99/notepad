@@ -4,7 +4,6 @@ import express, { NextFunction, Response, Request } from 'express'
 import morgan from 'morgan'
 import notesRoutes from './routes/notes'
 import createHttpError, { isHttpError } from 'http-errors'
-import cors from 'cors'
 
 const app = express()
 
@@ -15,14 +14,6 @@ const app = express()
 // 如果沒有 express.json() 中介軟體，您就需要手動使用 JSON 解析器 (例如 JSON.parse()) 解析請求主體，這可能很繁瑣且容易出錯。
 app.use(express.json())
 app.use(morgan('dev'))
-
-app.set('trust proxy', 1)
-app.use(
-  cors({
-    credentials: true,
-    origin: process.env.ORIGIN || 'http://localhost:3000',
-  }),
-)
 
 app.use('/api/notes', notesRoutes)
 

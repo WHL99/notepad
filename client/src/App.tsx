@@ -7,7 +7,7 @@ function App() {
 
   const getNotes = async () => {
     try {
-      const response = await fetch('http://localhost:5005/api/notes/', { method: 'GET' })
+      const response = await fetch('/api/notes/', { method: 'GET' })
       const notes = await response.json()
       setNotes(notes)
     } catch (error) {
@@ -22,16 +22,20 @@ function App() {
   return (
     <div className='App'>
       <h1>Hello world!</h1>
+
+      {/* 直接全部的data */}
       {JSON.stringify(notes)}
-      {/* {notes &&
+
+      {/* loop data */}
+      {notes &&
         notes.map((note) => {
           return (
-            <div>
+            <div key={note._id}>
               <h1>{note.title}</h1>
               <p>{note.text}</p>
             </div>
           )
-        })} */}
+        })}
     </div>
   )
 }
