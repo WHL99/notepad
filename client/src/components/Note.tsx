@@ -10,7 +10,6 @@ interface NoteProps {
 
 function Note({ note, className }: NoteProps) {
   let createdUpdatedText: string
-
   note.createdAt >= note.updatedAt ? (createdUpdatedText = `Created: ${formatDate(note.createdAt)}`) : (createdUpdatedText = `Updated: ${formatDate(note.updatedAt)}`)
 
   return (

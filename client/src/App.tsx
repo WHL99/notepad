@@ -1,16 +1,20 @@
 import { useEffect, useState } from 'react'
 import { Note as NoteModel } from './models/note'
 import Note from './components/Note'
-import { Col, Container, Row } from 'react-bootstrap'
+import { Button, Col, Container, Row } from 'react-bootstrap'
 import styles from './styles/NotesPage.module.css'
+import styleUtils from './styles/utils.module.css'
+
+import * as NotesAPI from './network/note_API'
+import AddNoteDialog from './components/AddNoteDialog'
 
 function App() {
   const [notes, setNotes] = useState<NoteModel[]>([])
+  const [showAddNoteDialog, setShowAddNoteDialog] = useState(false)
 
   const getNotes = async () => {
     try {
-      const response = await fetch('/api/notes/', { method: 'GET' })
-      const notes = await response.json()
+      const notes = await NotesAPI.fetchNotes()
       setNotes(notes)
     } catch (error) {
       console.error(error)
@@ -23,20 +27,28 @@ function App() {
 
   return (
     <Container>
+      <Button style={{ display: 'block' }} className={`mb-4 ${styleUtils.blockCenter}`} onClick={() => setShowAddNoteDialog(true)}>
+        Add new note
+      </Button>
       <Row xs={1} md={2} xl={4} className='g-4'>
-        {/* 直接全部的data */}
-        {/* {JSON.stringify(notes)} */}
-
-        {/* loop data */}
         {notes &&
           notes.map((note) => {
             return (
-              <Col>
-                <Note note={note} key={note._id} className={styles.note} />
+              <Col key={note._id}>
+                <Note note={note} className={styles.note} />
               </Col>
             )
           })}
       </Row>
+      {showAddNoteDialog && (
+        <AddNoteDialog
+          onDismiss={() => setShowAddNoteDialog(false)}
+          onNoteSaved={(newNote) => {
+            setNotes([...notes, newNote])
+            setShowAddNoteDialog(false)
+          }}
+        />
+      )}
     </Container>
   )
 }
