@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react'
-import './App.css'
-import { Note } from './models/note'
+import { Note as NoteModel } from './models/note'
+import Note from './components/Note'
+import { Col, Container, Row } from 'react-bootstrap'
+import styles from './styles/NotesPage.module.css'
 
 function App() {
-  const [notes, setNotes] = useState<Note[]>([])
+  const [notes, setNotes] = useState<NoteModel[]>([])
 
   const getNotes = async () => {
     try {
@@ -20,23 +22,22 @@ function App() {
   }, [])
 
   return (
-    <div className='App'>
-      <h1>Hello world!</h1>
+    <Container>
+      <Row xs={1} md={2} xl={4} className='g-4'>
+        {/* 直接全部的data */}
+        {/* {JSON.stringify(notes)} */}
 
-      {/* 直接全部的data */}
-      {JSON.stringify(notes)}
-
-      {/* loop data */}
-      {notes &&
-        notes.map((note) => {
-          return (
-            <div key={note._id}>
-              <h1>{note.title}</h1>
-              <p>{note.text}</p>
-            </div>
-          )
-        })}
-    </div>
+        {/* loop data */}
+        {notes &&
+          notes.map((note) => {
+            return (
+              <Col>
+                <Note note={note} key={note._id} className={styles.note} />
+              </Col>
+            )
+          })}
+      </Row>
+    </Container>
   )
 }
 
