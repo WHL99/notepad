@@ -21,6 +21,15 @@ function App() {
     }
   }
 
+  const handleDelete = async (note: NoteModel) => {
+    try {
+      await NotesAPI.deleteNote(note._id)
+      setNotes(notes.filter((existedNote) => existedNote._id !== note._id))
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
   useEffect(() => {
     getNotes()
   }, [])
@@ -35,7 +44,15 @@ function App() {
           notes.map((note) => {
             return (
               <Col key={note._id}>
-                <Note note={note} className={styles.note} />
+                <Note
+                  note={note}
+                  className={styles.note}
+                  // onDeleteNoteClicked={() => {
+                  //   NotesAPI.deleteNote(note._id)
+                  // }}
+
+                  onDeleteNoteClicked={handleDelete}
+                />
               </Col>
             )
           })}

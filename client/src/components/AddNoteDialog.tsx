@@ -1,4 +1,3 @@
-import React from 'react'
 import { Form, Modal, Button } from 'react-bootstrap'
 import { useForm } from 'react-hook-form'
 import { Note } from '../models/note'
