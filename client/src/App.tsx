@@ -6,11 +6,13 @@ import styles from './styles/NotesPage.module.css'
 import styleUtils from './styles/utils.module.css'
 
 import * as NotesAPI from './network/note_API'
-import AddNoteDialog from './components/AddNoteDialog'
+import AddEditNoteDialog from './components/AddEditNoteDialog'
+import { TiPlus } from 'react-icons/ti'
 
 function App() {
   const [notes, setNotes] = useState<NoteModel[]>([])
   const [showAddNoteDialog, setShowAddNoteDialog] = useState(false)
+  const [noteToEdit, setNoteToEdit] = useState<NoteModel | null>(null)
 
   const getNotes = async () => {
     try {
@@ -36,33 +38,37 @@ function App() {
 
   return (
     <Container>
-      <Button style={{ display: 'block' }} className={`mb-4 ${styleUtils.blockCenter}`} onClick={() => setShowAddNoteDialog(true)}>
-        Add new note
+      <Button style={{ display: 'flex' }} className={`mb-4 ${styleUtils.blockCenter} ${styleUtils.flexCenter}`} onClick={() => setShowAddNoteDialog(true)}>
+        <TiPlus />
+        Add your note
       </Button>
       <Row xs={1} md={2} xl={4} className='g-4'>
         {notes &&
           notes.map((note) => {
             return (
               <Col key={note._id}>
-                <Note
-                  note={note}
-                  className={styles.note}
-                  // onDeleteNoteClicked={() => {
-                  //   NotesAPI.deleteNote(note._id)
-                  // }}
-
-                  onDeleteNoteClicked={handleDelete}
-                />
+                <Note note={note} className={styles.note} onDeleteNoteClicked={handleDelete} onNoteClicked={setNoteToEdit} />
               </Col>
             )
           })}
       </Row>
       {showAddNoteDialog && (
-        <AddNoteDialog
+        <AddEditNoteDialog
           onDismiss={() => setShowAddNoteDialog(false)}
           onNoteSaved={(newNote) => {
             setNotes([...notes, newNote])
             setShowAddNoteDialog(false)
+          }}
+        />
+      )}
+
+      {noteToEdit && (
+        <AddEditNoteDialog
+          noteToEdit={noteToEdit}
+          onDismiss={() => setNoteToEdit(null)}
+          onNoteSaved={(updatedNote) => {
+            setNotes(notes.map((existingNote) => (existingNote._id === updatedNote?._id ? updatedNote : existingNote)))
+            setNoteToEdit(null)
           }}
         />
       )}

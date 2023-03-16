@@ -9,19 +9,26 @@ interface NoteProps {
   note: NoteModel
   className?: String
   onDeleteNoteClicked: (note: NoteModel) => void
+  onNoteClicked: (note: NoteModel) => void
 }
 
-function Note({ note, className, onDeleteNoteClicked }: NoteProps) {
+function Note({ note, className, onDeleteNoteClicked, onNoteClicked }: NoteProps) {
   let createdUpdatedText: string
   note.createdAt >= note.updatedAt ? (createdUpdatedText = `Created: ${formatDate(note.createdAt)}`) : (createdUpdatedText = `Updated: ${formatDate(note.updatedAt)}`)
 
   return (
-    <Card className={styles.noteCard} style={{ backgroundColor: 'lightBlue' }}>
-      <Card.Body className={`${styles.cardBody} ${className}`}>
+    <Card
+      onClick={() => {
+        onNoteClicked(note)
+      }}
+      className={`${styles.noteCard} ${className}`}
+      style={{ backgroundColor: 'lightBlue' }}
+    >
+      <Card.Body className={styles.cardBody}>
         <Card.Title className={`${styles.cardTitle} ${styleUtils.flexCenter}`}>
           {note.title}
           <RiDeleteBinLine
-            className='tect-muted ms-auto'
+            className='text-muted ms-auto'
             onClick={(e) => {
               onDeleteNoteClicked(note)
               e.stopPropagation()
