@@ -5,8 +5,12 @@ import mongoose from 'mongoose'
 
 export const getNotes: RequestHandler = async (req, res, next) => {
   try {
+    // throw createHttpError(401)
+    // 製造錯誤來測試前端錯誤訊息
     const notes = await NoteModel.find().exec()
     res.status(200).json(notes)
+    // res.status(200).json([])
+    // 給空數組到前端測試
   } catch (error) {
     next(error)
   }
