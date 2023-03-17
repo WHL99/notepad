@@ -3,6 +3,8 @@
 import express, { NextFunction, Response, Request } from 'express'
 import morgan from 'morgan'
 import notesRoutes from './routes/notes'
+import usersRoutes from './routes/users'
+
 import createHttpError, { isHttpError } from 'http-errors'
 
 const app = express()
@@ -16,6 +18,7 @@ app.use(express.json())
 app.use(morgan('dev'))
 
 app.use('/api/notes', notesRoutes)
+app.use('/api/users', usersRoutes)
 
 app.use((req, res, next) => {
   next(createHttpError(404, 'Endpont not found!'))
