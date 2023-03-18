@@ -6,6 +6,9 @@ import notesRoutes from './routes/notes'
 import usersRoutes from './routes/users'
 
 import createHttpError, { isHttpError } from 'http-errors'
+import session from 'express-session'
+import env from './utils/validateEnv'
+import MongoStore from 'connect-mongo'
 
 const app = express()
 
@@ -16,6 +19,21 @@ const app = express()
 // 如果沒有 express.json() 中介軟體，您就需要手動使用 JSON 解析器 (例如 JSON.parse()) 解析請求主體，這可能很繁瑣且容易出錯。
 app.use(express.json())
 app.use(morgan('dev'))
+
+app.use(
+  session({
+    secret: env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+      maxAge: 60 * 60 * 1000,
+    },
+    rolling: true,
+    store: MongoStore.create({
+      mongoUrl: env.MONGODB_URI,
+    }),
+  }),
+)
 
 app.use('/api/notes', notesRoutes)
 app.use('/api/users', usersRoutes)
