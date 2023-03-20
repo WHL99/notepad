@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form'
 import { Note as NoteModel } from '../models/note'
 import { InputNote } from '../network/note_API'
 import * as NotesAPI from '../network/note_API'
+import TextInputField from './forms/TextInputField'
 
 interface AddEditNoteDialogProps {
   noteToEdit?: NoteModel
@@ -41,19 +42,8 @@ function AddEditNoteDialog({ noteToEdit, onDismiss, onNoteSaved }: AddEditNoteDi
 
       <Modal.Body>
         <Form id='addEditNoteForm' onSubmit={handleSubmit(onSubmit)}>
-          <Form.Group className='mb-3'>
-            <Form.Label>Title</Form.Label>
-
-            <Form.Control type='text' placeholder='Enter title' isInvalid={!!errors.title} {...register('title', { required: 'required' })} />
-
-            <Form.Control.Feedback type='invalid'>{errors.title?.message}</Form.Control.Feedback>
-          </Form.Group>
-
-          <Form.Group className='mb-3'>
-            <Form.Label>Text</Form.Label>
-
-            <Form.Control placeholder='Enter text' {...register('text')} as='textarea' rows={5} />
-          </Form.Group>
+          <TextInputField type='text' placeholder='Enter title' name='title' label='Title' register={register} registerOptions={{ required: 'required' }} error={errors.title} />
+          <TextInputField type='text' placeholder='Enter text' name='text' label='Text' register={register} as='textarea' rows={5} error={errors.text} />
         </Form>
       </Modal.Body>
 
