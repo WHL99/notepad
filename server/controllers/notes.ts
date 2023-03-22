@@ -2,27 +2,35 @@ import { RequestHandler } from 'express'
 import createHttpError from 'http-errors'
 import NoteModel from '../models/note'
 import mongoose from 'mongoose'
+import { assertIsDefined } from '../utils/assertIsDefined'
 
 export const getNotes: RequestHandler = async (req, res, next) => {
+  const authenticatedUserId = req.session.userId
   try {
-    // throw createHttpError(401)
-    // 製造錯誤來測試前端錯誤訊息
-    const notes = await NoteModel.find().exec()
+    assertIsDefined(authenticatedUserId)
+    const notes = await NoteModel.find({ userId: authenticatedUserId }).exec()
     res.status(200).json(notes)
-    // res.status(200).json([])
-    // 給空數組到前端測試
   } catch (error) {
     next(error)
   }
 }
 
 export const getNote: RequestHandler = async (req, res, next) => {
-  const noteID = req.params.noteID
+  const noteId = req.params.noteId
+  const authenticatedUserId = req.session.userId
+
   try {
-    if (!mongoose.isValidObjectId(noteID)) {
-      throw createHttpError(400, 'Invalid note ID')
+    assertIsDefined(authenticatedUserId)
+    if (!mongoose.isValidObjectId(noteId)) {
+      throw createHttpError(400, 'Invalid note Id')
     }
-    const note = await NoteModel.findById(noteID).exec()
+    const note = await NoteModel.findById(noteId).exec()
+    if (!note) {
+      throw createHttpError(404, 'Note not found.')
+    }
+    if (!note.userId.equals(authenticatedUserId)) {
+      throw createHttpError(401, 'You are not allowed to access this note.')
+    }
     res.status(200).json(note)
   } catch (error) {
     next(error)
@@ -41,12 +49,17 @@ export const createNote: RequestHandler<
 > = async (req, res, next) => {
   const title = req.body.title
   const text = req.body.text
+  const authenticatedUserId = req.session.userId
   try {
+    assertIsDefined(authenticatedUserId)
     if (!title) {
       throw createHttpError(400, 'Note must have a title!')
     }
-
-    const newNote = await NoteModel.create({ title: title, text: text })
+    const newNote = await NoteModel.create({
+      userId: authenticatedUserId,
+      title: title,
+      text: text,
+    })
     res.status(201).json(newNote)
   } catch (error) {
     next(error)
@@ -54,7 +67,7 @@ export const createNote: RequestHandler<
 }
 
 interface UpdateNoteParams {
-  noteID: string
+  noteId: string
 }
 interface UpdateNoteBody {
   title?: string
@@ -67,22 +80,25 @@ export const updateNote: RequestHandler<
   UpdateNoteBody,
   unknown
 > = async (req, res, next) => {
-  const noteID = req.params.noteID
+  const noteId = req.params.noteId
   const newTitle = req.body.title
   const newText = req.body.text
+  const authenticatedUserId = req.session.userId
   try {
-    if (!mongoose.isValidObjectId(noteID)) {
-      throw createHttpError(400, 'Invalid note ID')
+    assertIsDefined(authenticatedUserId)
+    if (!mongoose.isValidObjectId(noteId)) {
+      throw createHttpError(400, 'Invalid note Id')
     }
-
     if (!newTitle) {
       throw createHttpError(400, 'Note must have a title!')
     }
-
-    const updatedNote = await NoteModel.findByIdAndUpdate(noteID, {
+    const updatedNote = await NoteModel.findByIdAndUpdate(noteId, {
       title: newTitle,
       text: newText,
     })
+    if (!updatedNote?.userId.equals(authenticatedUserId)) {
+      throw createHttpError(401, 'You are not allowed to edit this note.')
+    }
     res.status(200).json(updatedNote)
   } catch (error) {
     next(error)
@@ -90,20 +106,18 @@ export const updateNote: RequestHandler<
 }
 
 export const deleteNote: RequestHandler = async (req, res, next) => {
-  const noteID = req.params.noteID
-  const title = req.body.title
-  const text = req.body.text
+  const noteId = req.params.noteId
+  const authenticatedUserId = req.session.userId
   try {
-    if (!mongoose.isValidObjectId(noteID)) {
-      throw createHttpError(400, 'Invalid note ID')
+    assertIsDefined(authenticatedUserId)
+    if (!mongoose.isValidObjectId(noteId)) {
+      throw createHttpError(400, 'Invalid note Id')
     }
-
-    await NoteModel.findByIdAndDelete(noteID, {
-      title: title,
-      text: text,
-    })
-
-    // 沒有回傳JSON
+    const note = await NoteModel.findById(noteId)
+    if (!note?.userId.equals(authenticatedUserId)) {
+      throw createHttpError(401, 'You are not allowed to edit this note.')
+    }
+    await note.deleteOne()
     res.sendStatus(204)
   } catch (error) {
     next(error)

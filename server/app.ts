@@ -1,14 +1,13 @@
 /// <reference types="node" />
-
-import express, { NextFunction, Response, Request } from 'express'
+import express, { NextFunction, Request, Response } from 'express'
 import morgan from 'morgan'
 import notesRoutes from './routes/notes'
 import usersRoutes from './routes/users'
-
-import createHttpError, { isHttpError } from 'http-errors'
-import session from 'express-session'
-import env from './utils/validateEnv'
 import MongoStore from 'connect-mongo'
+import session from 'express-session'
+import createHttpError, { isHttpError } from 'http-errors'
+import { requiresAuth } from './middleware/auth'
+import env from './utils/validateEnv'
 
 const app = express()
 
@@ -35,7 +34,7 @@ app.use(
   }),
 )
 
-app.use('/api/notes', notesRoutes)
+app.use('/api/notes', requiresAuth, notesRoutes)
 app.use('/api/users', usersRoutes)
 
 app.use((req, res, next) => {

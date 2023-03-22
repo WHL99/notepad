@@ -1,7 +1,7 @@
+import bcrypt from 'bcrypt'
 import { RequestHandler } from 'express'
 import createHttpError from 'http-errors'
 import UserModel from '../models/user'
-import bcrypt from 'bcrypt'
 
 const saltRounds = 10
 
@@ -12,12 +12,8 @@ interface SignUpBody {
 }
 
 export const getAuthenticatedUser: RequestHandler = async (req, res, next) => {
-  const authenticatedUserId = req.session.userId
   try {
-    if (!authenticatedUserId) {
-      throw createHttpError(401, 'User is not authenticated.')
-    }
-    const authenticatedUser = await UserModel.findById(authenticatedUserId)
+    const authenticatedUser = await UserModel.findById(req.session.userId)
       .select('+email')
       .exec()
     res.status(200).json(authenticatedUser)

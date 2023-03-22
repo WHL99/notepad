@@ -24,9 +24,9 @@ export async function createNote(note: InputNote): Promise<Note> {
 
 export async function updateNote(
   note: InputNote,
-  noteID: Note['_id'],
+  noteId: Note['_id'],
 ): Promise<Note> {
-  const response = await fetchData('/api/notes/' + noteID, {
+  const response = await fetchData('/api/notes/' + noteId, {
     method: 'PATCH',
     body: JSON.stringify(note),
     headers: {
@@ -36,8 +36,8 @@ export async function updateNote(
   return response.json()
 }
 
-export async function deleteNote(noteID: Note['_id']) {
-  await fetchData('/api/notes/' + noteID, {
+export async function deleteNote(noteId: Note['_id']) {
+  await fetchData('/api/notes/' + noteId, {
     method: 'DELETE',
   })
 }
