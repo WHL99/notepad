@@ -1,8 +1,8 @@
-import { Form, Modal, Button } from 'react-bootstrap'
+import { Button, Form, Modal } from 'react-bootstrap'
 import { useForm } from 'react-hook-form'
 import { Note as NoteModel } from '../models/note'
-import { InputNote } from '../network/note_API'
 import * as NotesAPI from '../network/note_API'
+import { InputNote } from '../network/note_API'
 import TextInputField from './forms/TextInputField'
 
 interface AddEditNoteDialogProps {
@@ -25,6 +25,8 @@ function AddEditNoteDialog({ noteToEdit, onDismiss, onNoteSaved }: AddEditNoteDi
 
   async function onSubmit(input: InputNote) {
     try {
+      console.log('!!!hi!!!')
+
       let noteResponse: NoteModel
       noteToEdit ? (noteResponse = await NotesAPI.updateNote(input, noteToEdit._id)) : (noteResponse = await NotesAPI.createNote(input))
       onNoteSaved(noteResponse)

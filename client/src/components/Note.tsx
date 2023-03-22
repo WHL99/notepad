@@ -1,9 +1,9 @@
-import { Note as NoteModel } from '../models/note'
 import { Card } from 'react-bootstrap'
-import styles from '../styles/Note.module.css'
-import { formatDate } from '../utils/formatDate'
 import { RiDeleteBinLine } from 'react-icons/ri'
+import { Note as NoteModel } from '../models/note'
+import styles from '../styles/Note.module.css'
 import styleUtils from '../styles/utils.module.css'
+import { formatDate } from '../utils/formatDate'
 
 interface NoteProps {
   note: NoteModel

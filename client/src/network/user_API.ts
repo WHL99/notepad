@@ -1,7 +1,7 @@
 import { User } from '../models/user'
 import { fetchData } from './utils/fetchData'
 
-export async function getLoggedInUser(): Promise<User> {
+export async function fetchLoggedInUser(): Promise<User> {
   const response = await fetchData('/api/users/', { method: 'GET' })
   return response.json()
 }
