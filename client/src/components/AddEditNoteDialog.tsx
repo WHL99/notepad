@@ -1,5 +1,7 @@
-import { Button, Form, Modal } from 'react-bootstrap'
+import { useState } from 'react'
+import { Alert, Button, Form, Modal } from 'react-bootstrap'
 import { useForm } from 'react-hook-form'
+import { BadRequestError } from '../errors/http_errors'
 import { Note as NoteModel } from '../models/note'
 import * as NotesAPI from '../network/note_API'
 import { InputNote } from '../network/note_API'
@@ -23,21 +25,22 @@ function AddEditNoteDialog({ noteToEdit, onDismiss, onNoteSaved }: AddEditNoteDi
     },
   })
 
+  const [errorText, setErrorText] = useState<string | null>(null)
+
   async function onSubmit(input: InputNote) {
     try {
-      console.log('!!!hi!!!')
-
       let noteResponse: NoteModel
       noteToEdit ? (noteResponse = await NotesAPI.updateNote(input, noteToEdit._id)) : (noteResponse = await NotesAPI.createNote(input))
       onNoteSaved(noteResponse)
     } catch (error) {
+      error instanceof BadRequestError ? setErrorText(error.message) : alert(error)
       console.error(error)
-      alert(error)
     }
   }
 
   return (
     <Modal show onHide={onDismiss}>
+      {errorText && <Alert>{errorText}</Alert>}
       <Modal.Header closeButton>
         <Modal.Title>{noteToEdit ? 'Edit Note' : 'Add Note'}</Modal.Title>
       </Modal.Header>

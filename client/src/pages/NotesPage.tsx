@@ -9,19 +9,6 @@ interface NotesPageProps {
 }
 
 function NotesPage({ loggedInUser }: NotesPageProps) {
-  //   const [loggedInUser, setLoggedInUser] = useState<UserModel | null>(null)
-
-  //   const getLoggedInUser = async () => {
-  //     try {
-  //       const user = await UsersAPI.fetchLoggedInUser()
-  //       setLoggedInUser(user)
-  //     } catch (error) {
-  //       console.error(error)
-  //     }
-  //   }
-  //   useEffect(() => {
-  //     getLoggedInUser()
-  //   }, [])
   return (
     <Container className={styles.notesPage}>
       <>{loggedInUser ? <NotesPageLoggedInView /> : <NotesPageLoggedOutView />}</>

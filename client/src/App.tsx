@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react'
+import { Container } from 'react-bootstrap'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import styles from '../src/styles/App.module.css'
 import LogInModal from './components/LogInModal'
 import NavBar from './components/NavBar'
 import SignUpModal from './components/SignUpModal'
 import { User as UserModel } from './models/user'
 import * as UsersAPI from './network/user_API'
 import NotesPage from './pages/NotesPage'
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import NotFoundPage from './pages/NotFoundPage'
-import { Container } from 'react-bootstrap'
-import styles from '../src/styles/App.module.css'
 
 function App() {
   const [loggedInUser, setLoggedInUser] = useState<UserModel | null>(null)

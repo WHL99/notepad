@@ -1,5 +1,5 @@
+import { Button, Navbar } from 'react-bootstrap'
 import { User as UserModel } from '../models/user'
-import { Navbar, Button } from 'react-bootstrap'
 import * as UsersAPI from '../network/user_API'
 
 interface NavBarLoggedInViewProps {

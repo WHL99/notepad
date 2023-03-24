@@ -32,7 +32,6 @@ function Note({ note, className, onDeleteNoteClicked, onNoteClicked }: NoteProps
             onClick={(e) => {
               onDeleteNoteClicked(note)
               e.stopPropagation()
-              // A method for event handlers that stops the event from bubbling up the event chain.
             }}
           />
         </Card.Title>

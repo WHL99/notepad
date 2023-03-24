@@ -6,9 +6,7 @@ import * as NotesAPI from '../network/note_API'
 import styles from '../styles/NotesPage.module.css'
 import styleUtils from '../styles/utils.module.css'
 import AddEditNoteDialog from './AddEditNoteDialog'
-import LogInModal from './LogInModal'
 import Note from './Note'
-import SignUpModal from './SignUpModal'
 
 function NotesPageLoggedInView() {
   const [notes, setNotes] = useState<NoteModel[]>([])

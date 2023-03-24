@@ -7,7 +7,6 @@ import env from './utils/validateEnv'
 const port = env.PORT
 const mongoDB_URI = env.MONGODB_URI
 
-// connect會返回promise 所以用.then來處理promise
 mongoose
   .connect(mongoDB_URI!)
   .then(() => {
